@@ -1,0 +1,8 @@
+{
+  "scanned": "2026-06-26",
+  "fontStack": "Geist + Geist Mono (next/font, app/layout.tsx)",
+  "palette": "Warm coral/peach hex in app/globals.css :root",
+  "motion": "framer-motion 12 (package.json)",
+  "spacing": "Tailwind v4 default",
+  "framework": "Next.js 16 app router"
+}
