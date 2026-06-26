@@ -35,14 +35,20 @@ export default function GifGallery() {
   const containerRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useReducedMotion();
 
-  const scrollToIndex = useCallback((index: number) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const clamped = Math.max(0, Math.min(index, TOTAL_SLIDES - 1));
-    const slide = container.children[clamped] as HTMLElement | undefined;
-    slide?.scrollIntoView({ behavior: prefersReducedMotion ? 'auto' : 'smooth', block: 'start' });
-    setCurrent(clamped);
-  }, [prefersReducedMotion]);
+  const scrollToIndex = useCallback(
+    (index: number) => {
+      const container = containerRef.current;
+      if (!container) return;
+      const clamped = Math.max(0, Math.min(index, TOTAL_SLIDES - 1));
+      const slide = container.children[clamped] as HTMLElement | undefined;
+      slide?.scrollIntoView({
+        behavior: prefersReducedMotion ? 'auto' : 'smooth',
+        block: 'start',
+      });
+      setCurrent(clamped);
+    },
+    [prefersReducedMotion],
+  );
 
   useEffect(() => {
     const container = containerRef.current;
@@ -81,81 +87,98 @@ export default function GifGallery() {
   }, [current, scrollToIndex]);
 
   return (
-    <section className="relative h-dvh flex flex-col" aria-label="Birthday meme reel">
+    <section
+      className="relative h-dvh w-full min-w-0 flex flex-col overflow-x-clip"
+      aria-label="Birthday meme reel"
+      style={{ backgroundColor: 'var(--color-paper)' }}
+    >
       <header
-        className="absolute top-0 inset-x-0 z-20 px-[clamp(1rem,4vw,2rem)] pt-5 pb-8 pointer-events-none"
+        className="absolute top-0 inset-x-0 z-20 pointer-events-none border-b"
         style={{
-          background: 'linear-gradient(to bottom, var(--color-overlay-strong), transparent)',
+          paddingTop: 'max(0.75rem, var(--safe-top))',
+          paddingLeft: 'max(1rem, var(--safe-left))',
+          paddingRight: 'max(1rem, var(--safe-right))',
+          background:
+            'linear-gradient(to bottom, var(--color-paper), color-mix(in oklch, var(--color-paper) 88%, transparent))',
+          borderColor: 'var(--color-rule)',
         }}
       >
-        <p
-          className="text-center font-normal leading-tight mb-3"
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(1.5rem, 4vw + 0.5rem, 2.25rem)',
-            color: 'var(--color-on-photo)',
-          }}
-        >
-          nahh Just kidding
-        </p>
-        <div className="flex items-center justify-between pointer-events-auto">
+        <div className="px-[clamp(0.25rem,2vw,1rem)] pt-2 pb-3 sm:pb-4">
           <p
-            className="font-mono uppercase tracking-[0.18em]"
-            style={{ fontSize: 'var(--text-caption)', color: 'var(--color-on-photo)' }}
+            className="text-center font-normal leading-tight mb-2 sm:mb-3 min-w-0 [overflow-wrap:anywhere]"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'var(--text-gallery-title)',
+              color: 'var(--color-ink)',
+            }}
           >
-            {current < CLOSING_INDEX
-              ? `Exhibit ${current + 1} of ${gifs.length}`
-              : 'One more thing'}
+            nahh Just kidding
           </p>
-          <nav className="flex gap-2" aria-label="Jump to slide">
-            {Array.from({ length: TOTAL_SLIDES }, (_, index) => (
-              <button
-                key={index}
-                type="button"
-                onClick={() => scrollToIndex(index)}
-                aria-label={
-                  index < CLOSING_INDEX
-                    ? `Go to meme ${index + 1}`
-                    : 'Go to closing message'
-                }
-                aria-current={index === current ? 'true' : undefined}
-                className="min-h-12 min-w-12 flex items-center justify-center rounded-full transition-[background-color,transform] duration-[var(--dur-fast)] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 active:scale-95"
-                style={{
-                  outlineColor: 'var(--color-focus)',
-                  backgroundColor:
-                    index === current
-                      ? 'var(--color-accent)'
-                      : 'color-mix(in oklch, var(--color-on-photo) 18%, transparent)',
-                }}
-              >
-                <span
-                  className="block rounded-full"
+
+          <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center sm:justify-between pointer-events-auto min-w-0">
+            <p
+              className="font-mono uppercase tracking-[0.12em] sm:tracking-[0.18em] text-center sm:text-left shrink-0"
+              style={{ fontSize: 'var(--text-caption)', color: 'var(--color-muted)' }}
+            >
+              {current < CLOSING_INDEX
+                ? `Exhibit ${current + 1} of ${gifs.length}`
+                : 'One more thing'}
+            </p>
+
+            <nav
+              className="flex flex-wrap justify-center gap-1.5 sm:gap-2 min-w-0"
+              aria-label="Jump to slide"
+            >
+              {Array.from({ length: TOTAL_SLIDES }, (_, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  onClick={() => scrollToIndex(index)}
+                  aria-label={
+                    index < CLOSING_INDEX
+                      ? `Go to meme ${index + 1}`
+                      : 'Go to closing message'
+                  }
+                  aria-current={index === current ? 'true' : undefined}
+                  className="min-h-11 min-w-11 sm:min-h-12 sm:min-w-12 flex items-center justify-center rounded-full transition-[background-color,transform] duration-(--dur-fast) focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 active:scale-95 shrink-0"
                   style={{
-                    width: index === current ? '0.625rem' : '0.375rem',
-                    height: index === current ? '0.625rem' : '0.375rem',
+                    outlineColor: 'var(--color-focus)',
                     backgroundColor:
-                      index === current ? 'var(--color-ink)' : 'var(--color-on-photo)',
+                      index === current
+                        ? 'var(--color-accent)'
+                        : 'var(--color-paper-3)',
                   }}
-                />
-              </button>
-            ))}
-          </nav>
+                >
+                  <span
+                    className="block rounded-full"
+                    style={{
+                      width: index === current ? '0.625rem' : '0.375rem',
+                      height: index === current ? '0.625rem' : '0.375rem',
+                      backgroundColor:
+                        index === current ? 'var(--color-ink)' : 'var(--color-muted)',
+                    }}
+                  />
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
       </header>
 
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto snap-y snap-mandatory overscroll-y-contain"
-        style={{ backgroundColor: 'var(--color-ink)' }}
+        className="flex-1 min-h-0 overflow-y-auto overflow-x-clip snap-y snap-mandatory overscroll-y-contain"
+        style={{ backgroundColor: 'var(--color-paper-2)' }}
       >
         {gifs.map((gif, index) => (
           <article
             key={gif.id}
             data-index={index}
-            className="relative h-dvh snap-start snap-always flex items-center justify-center px-[clamp(0.75rem,3vw,2rem)]"
+            className="relative h-dvh snap-start snap-always flex items-center justify-center px-[clamp(0.75rem,3vw,2rem)] box-border pt-[var(--gallery-header)] pb-[var(--gallery-footer)]"
           >
             <motion.div
-              className="relative w-full max-w-lg"
+              className="relative w-full min-w-0 max-w-lg rounded-(--radius-md) p-2 sm:p-3"
+              style={{ backgroundColor: 'var(--color-paper)' }}
               initial={prefersReducedMotion ? false : { opacity: 0.85 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true, amount: 0.6 }}
@@ -165,9 +188,9 @@ export default function GifGallery() {
               <img
                 src={gif.src}
                 alt={gif.alt}
-                className="w-full h-auto max-h-[78dvh] object-contain rounded-[var(--radius-sm)]"
+                className="w-full min-w-0 h-auto max-h-[min(58dvh,calc(100dvh-var(--gallery-header)-var(--gallery-footer)-2rem))] object-contain rounded-(--radius-sm)"
                 style={{
-                  boxShadow: '0 24px 48px -20px oklch(0% 0 0 / 0.65)',
+                  boxShadow: '0 16px 40px -16px var(--color-card-shadow, oklch(55% 0.04 45 / 0.12))',
                 }}
               />
             </motion.div>
@@ -176,18 +199,19 @@ export default function GifGallery() {
 
         <article
           data-index={CLOSING_INDEX}
-          className="relative h-dvh snap-start snap-always flex items-center justify-center px-[clamp(1.25rem,5vw,3rem)]"
+          className="relative h-dvh snap-start snap-always flex items-center justify-center px-[clamp(1rem,5vw,3rem)] box-border pt-[var(--gallery-header)] pb-[var(--gallery-footer)]"
+          style={{ backgroundColor: 'var(--color-paper)' }}
         >
           <motion.p
-            className="text-center leading-relaxed max-w-md overflow-wrap-anywhere min-w-0"
+            className="text-center leading-relaxed w-full min-w-0 max-w-md [overflow-wrap:anywhere]"
             initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{
               fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(1.25rem, 2.5vw + 0.75rem, 1.75rem)',
-              color: 'var(--color-on-photo)',
+              fontSize: 'clamp(1.125rem, 2.5vw + 0.65rem, 1.75rem)',
+              color: 'var(--color-ink)',
             }}
           >
             Amma did not want to be a part of this so she sends her kisses and
@@ -197,21 +221,24 @@ export default function GifGallery() {
       </div>
 
       <footer
-        className="absolute bottom-0 inset-x-0 z-20 px-[clamp(1rem,4vw,2rem)] py-5 pointer-events-none"
+        className="absolute bottom-0 inset-x-0 z-20 pointer-events-none border-t"
         style={{
-          background: 'linear-gradient(to top, var(--color-overlay-strong), transparent)',
+          paddingBottom: 'max(1rem, var(--safe-bottom))',
+          paddingLeft: 'max(1rem, var(--safe-left))',
+          paddingRight: 'max(1rem, var(--safe-right))',
+          background:
+            'linear-gradient(to top, var(--color-paper), color-mix(in oklch, var(--color-paper) 85%, transparent))',
+          borderColor: 'var(--color-rule)',
         }}
       >
         <p
-          className="text-center font-mono uppercase tracking-[0.14em] pointer-events-none"
+          className="text-center font-mono uppercase tracking-[0.12em] sm:tracking-[0.14em] px-2 py-4 pointer-events-none"
           style={{
             fontSize: 'var(--text-caption)',
-            color: 'color-mix(in oklch, var(--color-on-photo) 70%, transparent)',
+            color: 'var(--color-muted)',
           }}
         >
-          {current < CLOSING_INDEX
-            ? 'Scroll or press ↓'
-            : 'Happy birthday, Ammu'}
+          {current < CLOSING_INDEX ? 'Scroll or press ↓' : 'Happy birthday, Ammu'}
         </p>
       </footer>
     </section>

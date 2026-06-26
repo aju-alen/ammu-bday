@@ -10,7 +10,7 @@ export default function Home() {
 
   return (
     <MusicProvider>
-      <main className="min-h-dvh overflow-x-clip">
+      <main className="min-h-dvh w-full min-w-0 overflow-x-clip">
         {!showGallery ? (
           <BirthdayMessage onProceed={() => setShowGallery(true)} />
         ) : (

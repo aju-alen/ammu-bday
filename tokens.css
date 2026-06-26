@@ -15,19 +15,28 @@
   --color-accent: oklch(58% 0.16 35);
   --color-accent-deep: oklch(48% 0.17 32);
   --color-accent-soft: oklch(58% 0.16 35 / 0.14);
-  --color-overlay: oklch(18% 0.02 45 / 0.55);
-  --color-overlay-strong: oklch(12% 0.02 40 / 0.72);
+  --color-overlay: oklch(98% 0.012 55 / 0.55);
+  --color-overlay-strong: oklch(98% 0.012 55 / 0.88);
   --color-focus: oklch(58% 0.16 35);
   --color-rule: oklch(82% 0.012 55);
   --color-on-photo: oklch(98% 0.008 80);
+  --color-card-shadow: oklch(55% 0.04 45 / 0.12);
 
   --font-display: var(--font-fraunces), 'Fraunces Fallback', Georgia, serif;
   --font-body: var(--font-geist-sans), 'Geist Fallback', system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), 'Geist Mono Fallback', monospace;
 
-  --text-display: clamp(2.25rem, 5vw + 1rem, 4.5rem);
-  --text-lede: clamp(1.05rem, 1.2vw + 0.85rem, 1.35rem);
-  --text-caption: clamp(0.75rem, 0.4vw + 0.7rem, 0.875rem);
+  --text-display: clamp(1.75rem, 5vw + 0.75rem, 4.5rem);
+  --text-lede: clamp(1rem, 1.2vw + 0.8rem, 1.35rem);
+  --text-caption: clamp(0.6875rem, 0.4vw + 0.65rem, 0.875rem);
+  --text-gallery-title: clamp(1.25rem, 3.5vw + 0.5rem, 2.25rem);
+
+  --gallery-header: clamp(7.5rem, 18vh, 9.5rem);
+  --gallery-footer: clamp(3.5rem, 10vh, 5rem);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;

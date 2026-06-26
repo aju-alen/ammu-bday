@@ -167,12 +167,21 @@
   html,
   body {
     overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
     background-color: var(--color-paper);
     color: var(--color-ink);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+  }
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
   }
   html {
     @apply font-sans;
