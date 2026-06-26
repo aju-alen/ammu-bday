@@ -5,30 +5,102 @@ import { motion, useReducedMotion } from 'framer-motion';
 
 interface GifItem {
   id: number;
-  src: string;
+  gif: string;
+  video: string;
   alt: string;
 }
 
 const gifs: GifItem[] = [
   {
     id: 1,
-    src: '/1.gif',
+    gif: '/1.gif',
+    video: '/1.mp4',
     alt: 'Me when Ammu brings so much joy once she leaves the room',
   },
   {
     id: 2,
-    src: '/2.gif',
+    gif: '/2.gif',
+    video: '/2.mp4',
     alt: 'Me after July 12 moving into my new bedroom',
   },
   {
     id: 3,
-    src: '/3.gif',
+    gif: '/3.gif',
+    video: '/3.mp4',
     alt: 'Us sad after Ammu leaves',
   },
 ];
 
+const MOBILE_GIF_HINT = 'If you are on your mobile hold down the image to play the gif :)';
+
 const CLOSING_INDEX = gifs.length;
 const TOTAL_SLIDES = gifs.length + 1;
+
+function MemePlayer({
+  item,
+  prefersReducedMotion,
+}: {
+  item: GifItem;
+  prefersReducedMotion: boolean | null;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    const slide = video?.closest('article');
+    if (!video || !slide || prefersReducedMotion) return;
+
+    const play = () => {
+      void video.play().catch(() => {});
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.45) {
+            play();
+          } else {
+            video.pause();
+          }
+        }
+      },
+      { threshold: [0.45, 0.75] },
+    );
+
+    observer.observe(slide);
+    play();
+
+    return () => observer.disconnect();
+  }, [prefersReducedMotion, item.video]);
+
+  const mediaClassName =
+    'w-full min-w-0 h-auto max-h-[min(52dvh,calc(100dvh-var(--gallery-header)-var(--gallery-footer)-5rem))] object-contain rounded-(--radius-sm) shadow-[0_16px_40px_-16px_var(--color-card-shadow)]';
+
+  if (prefersReducedMotion) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img src={item.gif} alt={item.alt} className={mediaClassName} />
+    );
+  }
+
+  return (
+    <video
+      ref={videoRef}
+      className={mediaClassName}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="auto"
+      poster={item.gif}
+      aria-label={item.alt}
+    >
+      <source src={item.video} type="video/mp4" />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={item.gif} alt={item.alt} className={mediaClassName} />
+    </video>
+  );
+}
 
 export default function GifGallery() {
   const [current, setCurrent] = useState(0);
@@ -184,15 +256,17 @@ export default function GifGallery() {
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={gif.src}
-                alt={gif.alt}
-                className="w-full min-w-0 h-auto max-h-[min(58dvh,calc(100dvh-var(--gallery-header)-var(--gallery-footer)-2rem))] object-contain rounded-(--radius-sm)"
+              <p
+                className="mb-2 hidden text-center leading-snug px-1 [overflow-wrap:anywhere] min-w-0 [@media(pointer:coarse)]:block"
                 style={{
-                  boxShadow: '0 16px 40px -16px var(--color-card-shadow, oklch(55% 0.04 45 / 0.12))',
+                  fontSize: 'var(--text-caption)',
+                  color: 'var(--color-muted)',
                 }}
-              />
+              >
+                {MOBILE_GIF_HINT}
+              </p>
+
+              <MemePlayer item={gif} prefersReducedMotion={prefersReducedMotion} />
             </motion.div>
           </article>
         ))}

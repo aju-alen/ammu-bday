@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import Image from 'next/image';
 
 interface BirthdayMessageProps {
   onProceed: () => void;
@@ -39,14 +38,16 @@ export default function BirthdayMessage({ onProceed }: BirthdayMessageProps) {
       className="relative min-h-dvh w-full min-w-0 flex flex-col justify-end"
       aria-label="Birthday greeting for Ammu"
     >
-      <Image
-        src="/ammu-bday.jpeg"
-        alt="Ammu"
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover object-[center_20%] sm:object-[center_25%]"
-      />
+      <picture className="absolute inset-0 block h-full w-full">
+        <source srcSet="/ammu-bday.avif" type="image/avif" />
+        <img
+          src="/ammu-bday.jpeg"
+          alt="Ammu"
+          className="h-full w-full object-cover object-[center_20%] sm:object-[center_25%]"
+          decoding="async"
+          fetchPriority="high"
+        />
+      </picture>
 
       <div
         className="absolute inset-0"
